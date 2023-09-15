@@ -11,13 +11,24 @@
 2. **Create virtual environment and activate it:**
    ```bash
     python3 -m venv venv
-    source venv/bin/ativate
-    ```   
-3. **Install dependencies:**
+   ```
+3. **Create virtual environment and activate it:**
+   
+   **Linux**
+   ```bash
+    source venv/bin/activate
+   ```
+   
+   **Windows**
+   ```
+   "venv/Scripts/activate"
+   ```   
+   
+4. **Install dependencies:**
    ```bash
     pip install -r requirements.txt
     ```
-4. **Run the server:**
+5. **Run the server:**
     ```bash
     uvicorn main:app --reload
     ```
