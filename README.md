@@ -21,7 +21,7 @@
    
    **Windows**
    ```
-   "venv/Scripts/activate"
+   .\venv\Scripts\activate
    ```   
    
 4. **Install dependencies:**
