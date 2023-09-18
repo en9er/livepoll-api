@@ -2,6 +2,9 @@
 
 ## Getting Started
 
+
+### Method 1: Using Virtual Environment
+
 1. **Clone the repository:**
 
     ```bash
@@ -32,3 +35,21 @@
     ```bash
     uvicorn main:app --reload
     ```
+   
+### Method 2: Using Docker Compose
+
+1. **Clone the repository:**
+
+    ```bash
+    git clone https://github.com/en9er/livepoll-api.git
+    cd livepoll-api
+    ```
+
+2. **Build and run using Docker Compose::**
+
+    ```bash
+   docker-compose up --build
+    ```
+
+Note: Ensure you have both Docker and Docker Compose installed 
+   on your machine before proceeding with the second method.
