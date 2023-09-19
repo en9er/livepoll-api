@@ -16,7 +16,7 @@ from root of the repository.
 
 The primary function provided by this script is `generate_version`.
 
-### `generate_version`
+### `generate-version`
 
 Generates a new migration version.
 
@@ -28,7 +28,8 @@ Generates a new migration version.
 #### Example:
 
 ```bash
-fab generate_version --message="Your migration version name here"
+cd dev-utils
+fab generate-version --message="Your migration version name here"
 ```
 
 #### How it works:
