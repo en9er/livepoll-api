@@ -22,7 +22,6 @@ def upgrade() -> None:
     op.execute(sqltext=file.read_text())
 
 
-
 def downgrade() -> None:
     file = Path(f"./app/data/migrations/versions/sqls/{revision}_${message}/DOWN.sql")
     op.execute(sqltext=file.read_text())
