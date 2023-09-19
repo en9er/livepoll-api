@@ -3,6 +3,9 @@ import logging.config
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.core.events.create_database_event import create_database, migrate
+from app.core.events import database_connection_event as db_conn
+
 LOGGING_CONFIG = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -40,6 +43,12 @@ app.add_middleware(
     allow_headers=["*"],
     expose_headers=["*"],
 )
+
+app.add_event_handler("startup", create_database())
+app.add_event_handler("startup", migrate())
+app.add_event_handler("startup", db_conn.start())
+app.add_event_handler("shutdown", db_conn.stop())
+
 
 
 @app.get("/")
