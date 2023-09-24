@@ -11,7 +11,7 @@ from fabric import task
     autoprint=True,
     help=dict(message="migration version name"),
 )
-def generate_version(c, message: str = ""):
+def generate_version(c, message):
     sqls_dir = Path("app/data/migrations/versions/sqls")
     os.chdir("../")
     current_date = datetime.now().strftime("%Y%m%d%H%M%S")
