@@ -89,9 +89,7 @@ async def create_new_user(user: UserCreate, response: Response):
 
     try:
         user = await authorization_handler.authenticate_user(
-            UserCredentials(
-                email=user.email, password=user.password
-            )
+            UserCredentials(email=user.email, password=user.password)
         )
     except (AuthException, UserServiceException):
         raise
@@ -107,7 +105,8 @@ async def get_single_user(user_id: int):
         raise HTTPException(status_code=404, detail="User not found")
 
     return JSONResponse(
-        status_code=200, content={"user": json.dumps(dict(user), cls=DateTimeEncoder)}
+        status_code=200,
+        content={"user": json.dumps(dict(user), cls=DateTimeEncoder)},
     )
 
 

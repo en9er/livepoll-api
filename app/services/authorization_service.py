@@ -50,9 +50,7 @@ class AuthorizationService:
             weeks=self.REFRESH_TOKEN_EXPIRE_WEEKS
         )
 
-    async def authenticate_user(
-        self, credentials: UserCredentials
-    ) -> User:
+    async def authenticate_user(self, credentials: UserCredentials) -> User:
         # TODO: Move user service injection to higher level
         user = await self.users.get(email=credentials.email)
         if not user or not user.password == credentials.password:

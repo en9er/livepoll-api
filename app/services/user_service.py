@@ -33,9 +33,7 @@ class UserService:
         else:
             return await self.query.get_all()
 
-    async def get(
-        self, uid: int = None, email: str = None
-    ) -> User:
+    async def get(self, uid: int = None, email: str = None) -> User:
         try:
             user = await self._get(uid, email)
         except Exception:

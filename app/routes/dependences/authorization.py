@@ -84,9 +84,7 @@ class AuthorizationHandler:
         self.scheme = scheme
         self._authorization_service = _authorization_service
 
-    async def authenticate_user(
-        self, credentials: UserCredentials
-    ) -> User:
+    async def authenticate_user(self, credentials: UserCredentials) -> User:
         """Verify credentials and authorize user
 
         :param credentials: User credentials from login form
