@@ -1,40 +1,40 @@
 from datetime import datetime
 from typing import Optional
-from app.models.user import User, UserCreate
+from app.data.models.user import User, UserCreate
 from app.data.database import database
+from app.data.query.user import UserQuery, user_query
 
 
-async def create_user(user: UserCreate) -> tuple[bool, str]:
-    result = False
-    try:
-        await database.execute(
-            "INSERT INTO users (username, email, password_hash, created_at) "
-            "VALUES ('%s', '%s', '%s', '%s');"
-            % (
-                user.username,
-                user.email,
-                user.password_hash,
-                datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+class UserServiceException(Exception):
+    pass
+
+
+class UserService:
+    query: UserQuery
+
+    def __init__(self, query=user_query):
+        self.query = query
+
+    async def create_user(self, user: UserCreate) -> None:
+        try:
+            await self.query.create(user)
+        except Exception as e:
+            raise UserServiceException(
+                f"Error occurred during creation of {user=}\n{e}"
             )
-        )
-    except Exception as e:
-        msg = str(e)
-    else:
-        result = True
-        msg = f"User {user.username} created successfully"
-    return result, msg
+
+    async def get_all_users(self) -> [User]:
+        return self.query.get_all()
+
+    async def get(
+        self, uid: int = None
+    ) -> User:
+        try:
+            user =  await self.query.get(uid)
+        except Exception:
+            raise UserServiceException("User not found")
+
+        return user
 
 
-async def get_user(user_id: int) -> Optional[User]:
-    user = await database.fetch_one("SELECT * FROM users WHERE user_id=%d" % user_id)
-    return User(**user) if user else None
-
-
-async def get_all_users():
-    records = await database.fetch_all(
-        "SELECT user_id, username, email, created_at FROM users"
-    )
-    users = []
-    for user in records:
-        users.append(dict(User(**user)))
-    return users if users else []
+user_service = UserService()
