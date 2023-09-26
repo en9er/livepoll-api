@@ -53,7 +53,7 @@ class AuthorizationService:
     async def authenticate_user(self, credentials: UserCredentials) -> User:
         # TODO: Move user service injection to higher level
         user = await self.users.get(email=credentials.email)
-        if not user or not user.password == credentials.password:
+        if not user or not user.password_hash == credentials.password_hash:
             raise AuthException("Incorrect login or password")
 
         return User(

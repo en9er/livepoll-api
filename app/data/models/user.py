@@ -10,10 +10,14 @@ class UserCreate(BaseModel):
 
 
 class User(BaseModel):
-    user_id: int
+    id: int
     username: str
     email: str
-    created_at: datetime
+    created_at: datetime| None = None
+
+
+class UserDB(User):
+    password_hash: str
 
 
 class UserCredentials(BaseModel):

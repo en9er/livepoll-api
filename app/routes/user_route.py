@@ -35,7 +35,7 @@ async def login_for_access_token(
     try:
         user = await authorization_handler.authenticate_user(
             UserCredentials(
-                email=form_data.username, password=form_data.password
+                email=form_data.username, password_hash=form_data.password
             )
         )
     except (AuthException, UserServiceException):
@@ -85,11 +85,11 @@ async def create_new_user(user: UserCreate, response: Response):
     try:
         await user_service.create_user(user)
     except UserServiceException as e:
-        raise HTTPException(status_code=500, detail=e)
+        raise HTTPException(status_code=500, detail="Can not create user")
 
     try:
         user = await authorization_handler.authenticate_user(
-            UserCredentials(email=user.email, password=user.password)
+            UserCredentials(email=user.email, password_hash=user.password_hash)
         )
     except (AuthException, UserServiceException):
         raise
@@ -100,8 +100,9 @@ async def create_new_user(user: UserCreate, response: Response):
 
 @user_router.get("/users/{user_id}", response_model=User)
 async def get_single_user(user_id: int):
-    user = await user_service.get_user(user_id)
-    if user is None:
+    try:
+        user = await user_service.get(uid=user_id)
+    except UserServiceException:
         raise HTTPException(status_code=404, detail="User not found")
 
     return JSONResponse(
@@ -112,6 +113,6 @@ async def get_single_user(user_id: int):
 
 @user_router.get("/users/")
 async def get_all_user():
-    res = await user_service.get_all_users()
-    users = json.dumps(res, cls=DateTimeEncoder)
-    return JSONResponse(status_code=200, content={"users": users})
+    users = await user_service.get()
+    resp = json.dumps([user.json() for user in users], cls=DateTimeEncoder)
+    return JSONResponse(status_code=200, content={"users": resp})

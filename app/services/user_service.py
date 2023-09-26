@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Optional, List
-from app.data.models.user import User, UserCreate
+from app.data.models.user import User, UserCreate, UserDB
 from app.data.database import database
 from app.data.query.user import UserQuery, user_query
 
@@ -25,7 +25,7 @@ class UserService:
 
     async def _get(
         self, uid: int = None, email: str = None
-    ) -> User | List[User]:
+    ) -> UserDB | List[UserDB]:
         if uid:
             return await self.query.get(uid)
         elif email:
@@ -33,7 +33,7 @@ class UserService:
         else:
             return await self.query.get_all()
 
-    async def get(self, uid: int = None, email: str = None) -> User:
+    async def get(self, uid: int = None, email: str = None) -> UserDB:
         try:
             user = await self._get(uid, email)
         except Exception:

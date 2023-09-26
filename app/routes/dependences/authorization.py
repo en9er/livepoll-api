@@ -11,7 +11,7 @@ from app.services.authorization_service import (
 )
 from app.services.user_service import UserServiceException
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/account/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/account/login")
 
 
 class Unauthorized(HTTPException):
