@@ -5,6 +5,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.events.create_database_event import create_database, migrate
 from app.core.events import database_connection_event as db_conn
+from app.routes.user_route import user_router
+
 
 LOGGING_CONFIG = {
     "version": 1,
@@ -50,12 +52,4 @@ app.add_event_handler("startup", db_conn.start())
 app.add_event_handler("shutdown", db_conn.stop())
 
 
-
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
-
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
+app.include_router(user_router, prefix="/api")
