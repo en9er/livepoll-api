@@ -14,3 +14,8 @@ class User(BaseModel):
     username: str
     email: str
     created_at: datetime
+
+
+class UserCredentials(BaseModel):
+    email: str
+    password_hash: str

@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 from app.data.models.user import User, UserCreate
 from app.data.database import database
 from app.data.query.user import UserQuery, user_query
@@ -23,14 +23,21 @@ class UserService:
                 f"Error occurred during creation of {user=}\n{e}"
             )
 
-    async def get_all_users(self) -> [User]:
-        return self.query.get_all()
+    async def _get(
+        self, uid: int = None, email: str = None
+    ) -> User | List[User]:
+        if uid:
+            return await self.query.get(uid)
+        elif email:
+            return await self.query.get_by_email(email)
+        else:
+            return await self.query.get_all()
 
     async def get(
-        self, uid: int = None
+        self, uid: int = None, email: str = None
     ) -> User:
         try:
-            user =  await self.query.get(uid)
+            user = await self._get(uid, email)
         except Exception:
             raise UserServiceException("User not found")
 
