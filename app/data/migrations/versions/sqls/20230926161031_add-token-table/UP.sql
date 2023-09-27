@@ -1,0 +1,5 @@
+CREATE TABLE token (
+    id SERIAL PRIMARY KEY,
+    token VARCHAR(256) NOT NULL,
+    is_active BOOLEAN NOT NULL DEFAULT true
+);
