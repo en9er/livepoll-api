@@ -31,10 +31,13 @@ jobs:
         sudo chmod +x /usr/local/bin/docker-compose
         docker-compose --version
       shell: bash
-
+    - name: Get Git Tag
+      id: tag
+      run: echo "::set-output name=tag::$(echo $GITHUB_REF | awk -F / '{print $3}')"
+      
     - name: Build and run Docker Compose
       run: |
-        docker-compose -f docker-compose.yml up -d
+        docker-compose -f docker-compose.yml up -d -t livepoll-api:${{ steps.tag.outputs.tag }} .
       working-directory: .
     - name: Login to Docker Hub
       run: |
@@ -43,9 +46,7 @@ jobs:
         DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
     
-    - name: Get Git Tag
-      id: tag
-      run: echo "::set-output name=tag::$(echo $GITHUB_REF | awk -F / '{print $3}')"
+    
 
     - name: Push Docker images to Docker Hub
       run: |
