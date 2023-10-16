@@ -37,7 +37,7 @@ jobs:
       
     - name: Build and run Docker Compose
       run: |
-        docker-compose -f docker-compose.yml up -d -t livepoll-api:${{ steps.tag.outputs.tag }} .
+        docker-compose -f docker-compose.yml up -d --build
       working-directory: .
     - name: Login to Docker Hub
       run: |
