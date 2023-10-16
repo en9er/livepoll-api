@@ -3,7 +3,7 @@ name: CI/CD for FastAPI in Docker
 on:
   push:
     branches:
-      - main
+      - build
 
 jobs:
   build:
