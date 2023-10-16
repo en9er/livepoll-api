@@ -1,32 +1,28 @@
-name: CI/CD for FastAPI in Docker
+name: Docker Compose on Tag
 
 on:
   push:
-    branches:
-      - build
+    tags:
+      - '*'
 
 jobs:
-  build:
+  docker-compose:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.10
+    - name: Set up Docker Compose
+      run: |
+        # Install Docker Compose
+        curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+        chmod +x /usr/local/bin/docker-compose
+        docker-compose --version
+      shell: bash
 
-      - name: Build and test Docker image
-        run: |
-          docker-compose up --build
+    - name: Build and run Docker Compose
+      run: |
+        docker-compose -f docker-compose.yml up -d
+      working-directory: .
 
-      - name: Deploy to Docker Hub
-        run: |
-          echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-          docker tag my-fastapi-app ${{ secrets.DOCKERHUB_USERNAME }}/livepoll-api
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/livepoll-api
-        env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
