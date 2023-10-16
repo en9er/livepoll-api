@@ -34,27 +34,23 @@ jobs:
     - name: Get Git Tag
       id: tag
       run: echo "::set-output name=tag::$(echo $GITHUB_REF | awk -F / '{print $3}')"
-      
-    - name: Build and run Docker Compose
-      run: |
-        docker-compose -f docker-compose.yml up -d --build
-      working-directory: .
-
-    - name: Build and Tag Docker Image
-      run: |
-        docker build -t livepoll-api:${{ steps.tag.outputs.tag }} .
-        docker tag livepoll-api:${{ steps.tag.outputs.tag }} "${{ secrets.DOCKERHUB_USERNAME }}/livepoll-api:${{ steps.tag.outputs.tag }}"
-      env:
-        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-        
+  
     - name: Login to Docker Hub
       run: |
         echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
       env:
         DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-    
-    
+  
+    - name: Build and Push Docker Images
+      run: |
+        VERSION=${{ github.ref }}
+        sed -i "s|image: my-image:latest|image: my-image:${VERSION}|g" docker-compose.yml
+        
+        docker-compose -f docker-compose.yml build
+        docker-compose -f docker-compose.yml push
+      env:
+        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}  
 
     - name: Push Docker images to Docker Hub
       run: |
